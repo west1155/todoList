@@ -1,23 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {FlexWrapper} from "../FlexWrapper";
+import {Button} from "../Button";
+import {TodoListHeader} from "./TodoListHeader";
+import {AddTaskForm} from "./AddTaskForm";
+import {Task, TaskType} from "../Task";
 
-export const TodoListDesktop = () => {
+
+type TodoListDesktopPropsType = {
+
+}
+
+export const TodoListDesktop: React.FC<TodoListDesktopPropsType> = () => {
+
+    const [tasks, setTasks] = useState<Array<TaskType>>([
+            {id:1, title: 'HTML', isDone: true},
+            {id:2, title: 'JS', isDone: false},
+            {id:3, title: 'REACT', isDone: false}
+    ])
+
+    const removeTask = (taskId: number) => {
+        const nextState: Array<TaskType> = tasks.filter(task => task.id !== taskId)
+        setTasks(nextState)
+    }
+
+    const addTask = (task: TaskType) => {
+        setTasks([task, ...tasks])
+    }
+
+
+    const todoListHeader = 'What to Learn'
+
     return (
         <FlexWrapper direction={'column'}>
-            <h3>What to learn</h3>
-            <div>
-                <input/>
-                <button>+</button>
-            </div>
+            <TodoListHeader title={todoListHeader}/>
+            <AddTaskForm addTask={addTask}/>
+
             <ul>
-                <li><input type='checkbox' checked={true}/> <span>HTML&CSS</span></li>
-                <li><input type='checkbox' checked={true}/> <span>JS</span></li>
-                <li><input type='checkbox' checked={false}/> <span>React</span></li>
+                {tasks.map((task)=> <Task id={task.id} title={task.title} isDone={task.isDone} removeTask={removeTask} />)}
             </ul>
             <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
+                <Button name={'All'} />
+                <Button name={'Active'}/>
+                <Button name={'Completed'}/>
             </div>
         </FlexWrapper>
 

@@ -2,13 +2,12 @@ import React from 'react';
 import styled from "styled-components";
 import {TodoListDesktop} from "./TodoListDesktop";
 
+
 export const TodoList = () => {
+
     return (
         <StyledTodoList>
-            <TodoListDesktop/>
-            <TodoListDesktop/>
-            <TodoListDesktop/>
-
+            <TodoListDesktop />
         </StyledTodoList>
     );
 };
