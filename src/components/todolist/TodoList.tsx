@@ -1,27 +1,87 @@
-import React from 'react';
-import styled from "styled-components";
-import {TodoListDesktop} from "./TodoListDesktop";
+import s from './TodoList.module.css'
+import {Button} from "./Button/Button";
+import {ChangeEvent, useRef} from "react";
+import {TaskType} from "../../App";
 
 
-export const TodoList = () => {
+export type FilterValuesType = 'All' | 'Active' | 'Completed'
+
+export type TasksStateType = {
+    [key: string]: TaskType[]
+}
+
+
+type TodolistPropsType = {
+    title: string
+    tasks: TaskType[]
+    removeTask: (taskId: string, todolistId: string) => void
+    removeTodolist: (todolistId: string) => void
+    todoListId: string
+    changeFilter: (filter: FilterValuesType, todolistId: string) => void
+    addTask: (title: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
+    filter: string
+}
+
+
+export const Todolist = ({title, addTask, tasks, removeTask, changeFilter, changeTaskStatus, todoListId, removeTodolist}: TodolistPropsType) => {
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const changeFilterTasksHandler = (filter: FilterValuesType, todolistId: string) => {
+        changeFilter(filter, todolistId)
+    }
+
+    const addTaskHandler = (taskTitle: string, todolistId: string) => {
+        taskTitle.trim() !== '' && addTask(taskTitle, todolistId)
+        inputRef.current!.value = ''
+    }
+
 
     return (
-        <StyledTodoList>
-            <TodoListDesktop />
-        </StyledTodoList>
-    );
-};
+        <div className={s.todo}>
+            <div className={s.title}>
+                <h3>{title}</h3>
+                <Button title={'X'} onClick={() => removeTodolist(todoListId)}/>
+            </div>
 
+            <div>
+                <input
+                    ref={inputRef}
+                    onKeyUp={event => {
+                        if (event.key === 'Enter') {
+                            addTaskHandler(inputRef.current?.value as string, todoListId)
+                        }
 
-const StyledTodoList = styled.div`
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-grow: 1; // proportion of the available space that should be taken up by the flex item
-  align-items: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-`;
+                    }}
+                />
+                <Button title={'+'} onClick={() => {
+                    addTaskHandler(inputRef.current?.value as string, todoListId)
+                }}/>
+            </div>
+            <ul className={s.list}>
+                {tasks.length === 0 ? <li className={s.li}>Empty</li> :
+                tasks.map(task => {
+                    const removeTaskHandler = () => {
+                        removeTask(task.id, todoListId)
+                    }
+                    const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+                        const newStatusValue = e.currentTarget.checked
+                        changeTaskStatus(task.id, newStatusValue, todoListId)
+                    }
 
+                    return <li className={s.li} key={task.id}>
+                        <input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>
+                        <span>{task.title}</span>
+                        <Button title={'X'} onClick={removeTaskHandler}></Button>
+                    </li>
+                    }
+                )}
+            </ul>
+            <div>
+                <Button title={'All'} onClick={() => {changeFilterTasksHandler('All',  todoListId)}}/>
+                <Button title={'Active'} onClick={() => {changeFilterTasksHandler('Active', todoListId)}}/>
+                <Button title={'Completed'} onClick={() => {changeFilterTasksHandler('Completed', todoListId)}}/>
+            </div>
+        </div>
+    )
+}
