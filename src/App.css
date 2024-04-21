@@ -29,6 +29,11 @@
   flex-wrap: wrap;
 }
 
+.todolist-title-container {
+  display: flex;
+  align-items: center;
+}
+
 .App-link {
   color: #61dafb;
 }
