@@ -1,20 +1,19 @@
-import { Button } from '@mui/material'
-import { ChangeEvent, KeyboardEvent, useState } from 'react'
-import { TextField } from '@mui/material'
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react'
+import {TextField} from '@mui/material'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import IconButton from '@mui/material/IconButton'
 
 type PropsType = {
-    addItem: (title: string) => void
+    addItem: (title: string, id: string) => void
 }
 
-export const AddItemForm = ({ addItem }: PropsType) => {
+export const AddItemForm = React.memo((props: PropsType) => {
     const [title, setTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
     const addItemHandler = () => {
         if (title.trim() !== '') {
-            addItem(title.trim())
+            props.addItem(title.trim(), '1')
             setTitle('')
         } else {
             setError('Title is required')
@@ -26,11 +25,15 @@ export const AddItemForm = ({ addItem }: PropsType) => {
     }
 
     const addItemOnKeyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-        setError(null)
+        if (error != null) {
+            setError(null)
+        }
         if (event.key === 'Enter') {
             addItemHandler()
         }
     }
+
+    console.log('AddItemForm is called')
 
     return (
         <div>
@@ -46,8 +49,8 @@ export const AddItemForm = ({ addItem }: PropsType) => {
                 onKeyUp={addItemOnKeyUpHandler}
             />
             <IconButton onClick={addItemHandler} color={'primary'}>
-                <AddBoxIcon />
+                <AddBoxIcon/>!!!
             </IconButton>
         </div>
     )
-}
+})

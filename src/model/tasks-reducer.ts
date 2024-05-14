@@ -1,5 +1,8 @@
 import {TasksStateType} from "../components/todolist/TodoList";
 
+import {AddTodolistActionType} from "./todolist-reducer";
+import {initialStateTask} from "./initialState";
+
 type RemoveTaskActionType = {
     type: 'REMOVE-TASK'
     payload: {
@@ -31,24 +34,19 @@ type ChangeTaskTitleActionType = {
     }
 }
 
-type AddTodolistActionType = {
-    type: 'ADD-TODOLIST'
-    title: string
-}
-
-
 type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST'
     id: string
 }
 
-type ActionsType = RemoveTaskActionType | AddTaskActionType | ChangeTaskStatusActionType | ChangeTaskTitleActionType | AddTodolistActionType | RemoveTodolistActionType
+export type ActionsType =AddTodolistActionType | RemoveTaskActionType | AddTaskActionType | ChangeTaskStatusActionType | ChangeTaskTitleActionType  | RemoveTodolistActionType
 
-export const tasksReducer = (state: TasksStateType, action: ActionsType) => {
+
+
+export const tasksReducer = (state: TasksStateType = initialStateTask, action: ActionsType) => {
     switch (action.type) {
         case 'REMOVE-TASK': {
             const todolistTasks = state[action.payload.todolistId];
-            debugger
             state[action.payload.todolistId] = todolistTasks.filter(t => t.id !== action.payload.taskId);
             return ({...state});
         }
@@ -64,24 +62,26 @@ export const tasksReducer = (state: TasksStateType, action: ActionsType) => {
             if (task) {
                 task.isDone = !task.isDone;
             }
+            state[action.payload.todolistId] = [...todolistTasks];
             return ({...state});
         }
         case 'CHANGE-TASK-TITLE': {
-            const todolistTasks = state[action.payload.todolistId];
+            const todolistTasks = state[action.payload.taskId];
+            console.log(action.payload.todolistId)
             const task = todolistTasks.find(t => t.id === action.payload.taskId);
             if (task) {
                 task.title = action.payload.title;
             }
+            state[action.payload.todolistId] = [...todolistTasks];
             return ({...state});
         }
 
-        case "ADD-TODOLIST": {
+        case 'ADD-TODOLIST': {
             return {
                 ...state,
-                [action.title]: []
+                [action.payload.id]: []
             }
         }
-
         case "REMOVE-TODOLIST": {
             let copyState = {...state}
             delete copyState[action.id]
@@ -89,7 +89,7 @@ export const tasksReducer = (state: TasksStateType, action: ActionsType) => {
         }
 
         default:
-            throw new Error("I don't understand this type")
+            return state
     }
 }
 export const RemoveTaskAC = (taskId: string, todolistId: string ): ActionsType => {
@@ -107,12 +107,6 @@ export const ChangeTaskStatusAC = (taskId: string, isDone: boolean, todolistId: 
 export const ChangeTaskTitleAC = (taskId: string, title: string, todolistId: string) => {
     return { type: 'CHANGE-TASK-TITLE', payload: { taskId, title, todolistId } } as const
 }
-
-
-export const AddTodolistAC = (title: string) => {
-    return { type: 'ADD-TODOLIST', title } as const
-}
-
 
 export const RemoveTodolistAC = (todolistId: string) => {
     return { type: 'REMOVE-TODOLIST', id: todolistId } as const

@@ -7,7 +7,7 @@ import {
     tasksReducer
 } from './tasks-reducer'
 import { TasksStateType } from '../components/todolist/TodoList'
-import {AddTodolistAC} from "./tasks-reducer";
+import {AddTodolistAC} from "./todolist-reducer";
 
 
 let startState: TasksStateType
@@ -88,7 +88,7 @@ test('title tea should be changed to coffee in todolistId2', () => {
 
 test('new array should be added when new todolist is added', () => {
 
-    const action = AddTodolistAC('new todolist')
+    const action = AddTodolistAC('new todolist', '1')
 
     const endState = tasksReducer(startState, action)
 

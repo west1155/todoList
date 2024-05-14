@@ -2,15 +2,13 @@ import s from './TodoList.module.css'
 import Button from "@mui/material/Button"
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
-import List from '@mui/material/List'
 import Box from '@mui/material/Box'
-import ListItem from '@mui/material/ListItem'
 import Checkbox from '@mui/material/Checkbox'
 
-import {TaskType} from "../../App";
+import {TaskType} from "../../AppWithReducers";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan/EditableSpan";
-import {ChangeEvent} from "react";
+import React, {ChangeEvent, useCallback} from "react";
 import {filterButtonsContainerSx} from "./Todo.style";
 
 
@@ -21,7 +19,7 @@ export type TasksStateType = {
 }
 
 
-type TodolistPropsType = {
+export type TodolistPropsType = {
     updateTask: (todolistId: string, taskId: string, title: string) => void
     updateTodolist: (todolistId: string, title: string) => void
     title: string
@@ -36,32 +34,45 @@ type TodolistPropsType = {
 }
 
 
-export const Todolist = ({
+export const Todolist = React.memo(({
                              title, addTask, tasks, removeTask, changeFilter, changeTaskStatus,
-                             todoListId, removeTodolist, updateTask, updateTodolist
+                             todoListId, removeTodolist, updateTask, updateTodolist, filter, ...tl
                          }: TodolistPropsType) => {
 
     const changeFilterTasksHandler = (filter: FilterValuesType, todolistId: string) => {
         changeFilter(filter, todolistId)
     }
 
-    const addTaskHandler = (taskTitle: string, todolistId: string) => {
+    const addTaskHandler = useCallback((taskTitle: string, todolistId: string) => {
         taskTitle.trim() !== '' && addTask(taskTitle, todolistId)
-    }
+    },[])
 
 
-    const addItem = (title: string) => {
-        addTaskHandler(title, todoListId)
-    }
+    const addItem = useCallback((title: string) => {
+        addTaskHandler(title, todoListId)},[])
 
-    const updateTodolistHandler = (title: string) => {
+
+    const updateTodolistHandler = useCallback((title: string) => {
         updateTodolist(todoListId, title)
-    }
+    },[])
 
 
-    const removeTodoListHandler = () => {
+    const removeTodoListHandler = useCallback(() => {
         removeTodolist(todoListId)
+    },[])
+
+    let allTodolistTasks = tasks
+    let tasksForTodolist = allTodolistTasks
+
+    if (filter === 'Active') {
+        tasksForTodolist = tasks.filter(item => !item.isDone)
     }
+
+    if (filter === 'Completed') {
+        tasksForTodolist = tasks.filter(item => item.isDone)
+    }
+
+    console.log('TodoList is called')
 
     return (
         <div className={s.todo}>
@@ -78,39 +89,32 @@ export const Todolist = ({
                 <AddItemForm addItem={addItem}/>
             </div>
             <ul className={s.list}>
-                {tasks.length === 0 ? <li className={s.li}>Empty</li> : (<List>
-                    {
-                        tasks.map(task => {
+                {tasksForTodolist.length === 0 ? <li className={s.li}>Empty</li> : (
+                    tasksForTodolist.map(task => {
+                        const changeTaskTitleHandler = (title: string) => {
+                            updateTask(todoListId, task.id, title);
+                        };
+                        const removeTaskHandler = () => {
+                            removeTask(task.id, todoListId);
+                        };
+                        const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+                            const newStatusValue = e.currentTarget.checked;
+                            changeTaskStatus(task.id, newStatusValue, todoListId);
+                        };
 
-                                const changeTaskTitleHandler = (title: string) => {
-                                    updateTask(todoListId, task.id, title)
-                                }
-                                const removeTaskHandler = () => {
-                                    removeTask(task.id, todoListId)
-                                }
-                                const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                                    const newStatusValue = e.currentTarget.checked
-                                    changeTaskStatus(task.id, newStatusValue, todoListId)
-                                }
-
-                                return (<ListItem key={task.id}
-                                                  sx={{
-                                                      p: 0,
-                                                      justifyContent: 'space-between',
-                                                      opacity: task.isDone ? 0.5 : 1,
-                                                  }}>
-                                    <li className={s.li} key={task.id}>
-                                        <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler}/>
-                                        <EditableSpan onChange={changeTaskTitleHandler} value={task.title}/>
-                                        <IconButton onClick={removeTaskHandler}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </li>
-                                </ListItem>)
-                            }
-                        )}
-                </List>)}
+                        return (
+                            <li key={task.id} className={s.listItem}>
+                                <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler}/>
+                                <EditableSpan onChange={changeTaskTitleHandler} value={task.title}/>
+                                <IconButton onClick={removeTaskHandler}>
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </li>
+                        );
+                    })
+                )}
             </ul>
+
             <div>
                 <Button
                     variant={title === 'All' ? 'outlined' : 'text'}
@@ -134,4 +138,4 @@ export const Todolist = ({
             </div>
         </div>
     )
-}
+})

@@ -1,5 +1,5 @@
 import {v1} from "uuid";
-import {TodoListType} from "../App";
+import {TodoListType} from "../AppWithReducers";
 import {
     AddTodolistAC,
     ChangeTodoListTitleAC,
@@ -11,7 +11,6 @@ import {
 let startState: TodoListType[]
 let todolistId1: string
 let todolistId2: string
-
 beforeEach(() => {
     todolistId1 = v1()
     todolistId2 = v1()
@@ -33,8 +32,8 @@ test('correct to do list should be removed', () => {
 
 test ('a new todolist should be added', () => {
     let newTodolistTitle = 'New Todolist'
-
-    const endState = todolistsReducer(startState, AddTodolistAC(newTodolistTitle))
+    const newTodolistId = v1()
+    const endState = todolistsReducer(startState, AddTodolistAC(newTodolistTitle, newTodolistId))
 
 
     expect(endState.length).toBe(3)
