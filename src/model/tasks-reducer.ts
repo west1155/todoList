@@ -2,8 +2,9 @@ import {TasksStateType} from "../components/todolist/TodoList";
 
 import {AddTodolistActionType} from "./todolist-reducer";
 import {initialStateTask} from "./initialState";
+import {TodoListType} from "../AppWithReducers";
 
-type RemoveTaskActionType = {
+export type RemoveTaskActionType = {
     type: 'REMOVE-TASK'
     payload: {
         taskId: string
@@ -11,13 +12,13 @@ type RemoveTaskActionType = {
     }
 }
 
-type AddTaskActionType = {
+export type AddTaskActionType = {
     type: 'ADD-TASK'
     title: string
     todolistId: string
 }
 
-type ChangeTaskStatusActionType = {
+export type ChangeTaskStatusActionType = {
     type: 'CHANGE-TASK-STATUS'
     payload: {
         taskId: string
@@ -25,7 +26,7 @@ type ChangeTaskStatusActionType = {
     }
 }
 
-type ChangeTaskTitleActionType = {
+export type ChangeTaskTitleActionType = {
     type: 'CHANGE-TASK-TITLE'
     payload: {
         taskId: string
@@ -34,12 +35,19 @@ type ChangeTaskTitleActionType = {
     }
 }
 
-type RemoveTodolistActionType = {
+export type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST'
     id: string
 }
 
-export type ActionsType =AddTodolistActionType | RemoveTaskActionType | AddTaskActionType | ChangeTaskStatusActionType | ChangeTaskTitleActionType  | RemoveTodolistActionType
+export type SetTasksActionType = {
+    type: 'SET-TODOLISTS'
+    todolists: TodoListType[]
+}
+
+
+
+export type ActionsType =AddTodolistActionType | RemoveTaskActionType | AddTaskActionType | ChangeTaskStatusActionType | ChangeTaskTitleActionType  | RemoveTodolistActionType | SetTasksActionType
 
 
 
@@ -66,8 +74,8 @@ export const tasksReducer = (state: TasksStateType = initialStateTask, action: A
             return ({...state});
         }
         case 'CHANGE-TASK-TITLE': {
-            const todolistTasks = state[action.payload.taskId];
-            console.log(action.payload.todolistId)
+            const todolistTasks = state[action.payload.todolistId];
+            console.log(action.payload)
             const task = todolistTasks.find(t => t.id === action.payload.taskId);
             if (task) {
                 task.title = action.payload.title;
@@ -86,6 +94,14 @@ export const tasksReducer = (state: TasksStateType = initialStateTask, action: A
             let copyState = {...state}
             delete copyState[action.id]
             return copyState
+        }
+
+        case 'SET-TODOLISTS': {
+            const stateCopy = { ...state }
+            action.todolists.forEach((tl: TodoListType) => {
+                stateCopy[tl.id] = []
+            })
+            return stateCopy
         }
 
         default:

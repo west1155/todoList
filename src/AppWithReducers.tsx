@@ -30,7 +30,7 @@ export type TaskType = {
 export type TodoListType = {
     id: string
     title: string
-    filter: FilterValuesType
+    filter: string
 }
 
 
@@ -158,7 +158,7 @@ function AppWithReducers() {
                                     <Grid key={tl.id}>
 
                                         <Paper key={tl.id} sx={{p: '0 20px 20px 20px'}}>
-                                            <Todolist
+                                            {/*<Todolist
                                                 updateTodolist={updateTodolist}
                                                 updateTask={updateTask}
                                                 filter={tl.filter}
@@ -171,7 +171,7 @@ function AppWithReducers() {
                                                 todoListId={tl.id}
                                                 key={tl.id}
                                                 addTask={addTask}
-                                            />
+                                            />*/}
                                         </Paper>
                                     </Grid>
 

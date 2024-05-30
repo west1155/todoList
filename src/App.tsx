@@ -46,8 +46,8 @@ function App() {
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
     const removeTodolist = (todolistId: string) => {
-        const newTodolists = todoLists.filter(tl => tl.id !== todolistId)
-        setTodoLists(newTodolists)
+        const newTodoLists = todoLists.filter(tl => tl.id !== todolistId)
+        setTodoLists(newTodoLists)
 
         //deletes tasks from task state and sets to the state
         delete tasks[todolistId]
@@ -148,7 +148,7 @@ function App() {
                                     <Grid>
 
                                         <Paper sx={{p: '0 20px 20px 20px'}}>
-                                            <Todolist
+                                           {/* <Todolist
                                                 updateTodolist={updateTodolist}
                                                 updateTask={updateTask}
                                                 filter={tl.filter}
@@ -161,7 +161,7 @@ function App() {
                                                 todoListId={tl.id}
                                                 key={tl.id}
                                                 addTask={addTask}
-                                            />
+                                            />*/}
                                         </Paper>
                                     </Grid>
 
@@ -175,5 +175,4 @@ function App() {
 
     );
 }
-
-export default App;
+export default App

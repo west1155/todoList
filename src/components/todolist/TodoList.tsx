@@ -3,14 +3,12 @@ import Button from "@mui/material/Button"
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
-
+import {Task} from "./Task";
 import {TaskType} from "../../AppWithReducers";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan/EditableSpan";
 import React, {ChangeEvent, useCallback} from "react";
 import {filterButtonsContainerSx} from "./Todo.style";
-
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 
@@ -20,41 +18,41 @@ export type TasksStateType = {
 
 
 export type TodolistPropsType = {
-    updateTask: (todolistId: string, taskId: string, title: string) => void
     updateTodolist: (todolistId: string, title: string) => void
-    title: string
+    titleTodo: string
     tasks: TaskType[]
     removeTask: (taskId: string, todolistId: string) => void
     removeTodolist: (todolistId: string) => void
     todoListId: string
     changeFilter: (filter: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
+    changeTaskTitle: (taskId: string, title: string, todolistId: string) => void
     changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
     filter: string
 }
 
 
+
 export const Todolist = React.memo(({
-                             title, addTask, tasks, removeTask, changeFilter, changeTaskStatus,
-                             todoListId, removeTodolist, updateTask, updateTodolist, filter, ...tl
+                             titleTodo, addTask, tasks, removeTask, changeFilter, changeTaskStatus,
+                            changeTaskTitle, todoListId, removeTodolist, filter, updateTodolist
                          }: TodolistPropsType) => {
+
 
     const changeFilterTasksHandler = (filter: FilterValuesType, todolistId: string) => {
         changeFilter(filter, todolistId)
     }
 
-    const addTaskHandler = useCallback((taskTitle: string, todolistId: string) => {
+    const addTaskHandler = (taskTitle: string, todolistId: string) => {
         taskTitle.trim() !== '' && addTask(taskTitle, todolistId)
-    },[])
+    }
 
 
-    const addItem = useCallback((title: string) => {
-        addTaskHandler(title, todoListId)},[])
+    const addItem = (title: string) => {
+        addTaskHandler(title, todoListId)
+    }
 
 
-    const updateTodolistHandler = useCallback((title: string) => {
-        updateTodolist(todoListId, title)
-    },[])
 
 
     const removeTodoListHandler = useCallback(() => {
@@ -72,12 +70,11 @@ export const Todolist = React.memo(({
         tasksForTodolist = tasks.filter(item => item.isDone)
     }
 
-    console.log('TodoList is called')
 
     return (
         <div className={s.todo}>
             <div className={s.title}>
-                <h3><EditableSpan onChange={updateTodolistHandler} value={title}/></h3>
+                <h3><EditableSpan todoListId={todoListId} updateTodoList={updateTodolist} value={titleTodo}/></h3>
                 <IconButton onClick={removeTodoListHandler}>
                     <DeleteIcon/>
                 </IconButton>
@@ -91,9 +88,6 @@ export const Todolist = React.memo(({
             <ul className={s.list}>
                 {tasksForTodolist.length === 0 ? <li className={s.li}>Empty</li> : (
                     tasksForTodolist.map(task => {
-                        const changeTaskTitleHandler = (title: string) => {
-                            updateTask(todoListId, task.id, title);
-                        };
                         const removeTaskHandler = () => {
                             removeTask(task.id, todoListId);
                         };
@@ -102,13 +96,18 @@ export const Todolist = React.memo(({
                             changeTaskStatus(task.id, newStatusValue, todoListId);
                         };
 
+
                         return (
-                            <li key={task.id} className={s.listItem}>
-                                <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler}/>
-                                <EditableSpan onChange={changeTaskTitleHandler} value={task.title}/>
-                                <IconButton onClick={removeTaskHandler}>
-                                    <DeleteIcon/>
-                                </IconButton>
+                            <li key={task.id} className={s.li}>
+                                <Task
+                                    todoListId={todoListId}
+                                    taskId={task.id}
+                                    title={task.title}
+                                    isDone={task.isDone}
+                                    removeTask={removeTaskHandler}
+                                    changeTaskStatus={changeTaskStatusHandler}
+                                    changeTaskTitle={changeTaskTitle}
+                                />
                             </li>
                         );
                     })
@@ -117,19 +116,19 @@ export const Todolist = React.memo(({
 
             <div>
                 <Button
-                    variant={title === 'All' ? 'outlined' : 'text'}
+                    variant={titleTodo === 'All' ? 'outlined' : 'text'}
                     color={'inherit'}
                     onClick={() => changeFilterTasksHandler('All', todoListId)}
                 >All
                 </Button>
                 <Button
-                    variant={title === 'Active' ? 'outlined' : 'text'}
+                    variant={titleTodo === 'Active' ? 'outlined' : 'text'}
                     color={'primary'}
                     onClick={() => changeFilterTasksHandler('Active', todoListId)}
                 >Active
                 </Button>
                 <Button
-                    variant={title === 'Completed' ? 'outlined' : 'text'}
+                    variant={titleTodo === 'Completed' ? 'outlined' : 'text'}
                     color={'secondary'}
                     onClick={() => changeFilterTasksHandler('Completed', todoListId)}
                 >Completed

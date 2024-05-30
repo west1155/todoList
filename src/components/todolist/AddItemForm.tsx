@@ -49,7 +49,7 @@ export const AddItemForm = React.memo((props: PropsType) => {
                 onKeyUp={addItemOnKeyUpHandler}
             />
             <IconButton onClick={addItemHandler} color={'primary'}>
-                <AddBoxIcon/>!!!
+                <AddBoxIcon/>
             </IconButton>
         </div>
     )

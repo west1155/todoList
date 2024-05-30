@@ -3,12 +3,15 @@ import {TextField} from "@mui/material";
 
 export type EditableSpanPropsType = {
     value: string
-    onChange: (newTitle: string) => void
+    taskId?: string
+    todoListId: string
+    changeTaskTitle?: (taskId: string, title: string, todolistId: string) => void
+    updateTodoList?: (todolistId: string, title: string) => void
 }
 
-export const EditableSpan = ({ value, onChange }: EditableSpanPropsType) => {
+export const EditableSpan = (props: EditableSpanPropsType) => {
     const [editMode, setEditMode] = useState(false)
-    const [title, setTitle] = useState(value)
+    const [title, setTitle] = useState(props.value)
 
     const activateEditModeHandler = () => {
         setEditMode(true)
@@ -16,11 +19,12 @@ export const EditableSpan = ({ value, onChange }: EditableSpanPropsType) => {
 
     const deactivateEditModeHandler = () => {
         setEditMode(false)
+        if (props.taskId) props.changeTaskTitle && props.changeTaskTitle(props.taskId, title, props.todoListId)
+        props.updateTodoList && props.updateTodoList(props.todoListId, title)
     }
 
     const changeTitleHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setTitle(event.currentTarget.value)
-        onChange(title)
 
     }
 
@@ -33,10 +37,11 @@ export const EditableSpan = ({ value, onChange }: EditableSpanPropsType) => {
                     size={'small'}
                     onChange={changeTitleHandler}
                     onBlur={deactivateEditModeHandler}
+                    onKeyUp={(e) => e.key === 'Enter' && deactivateEditModeHandler()}
                     autoFocus
                 />
             ) : (
-                <span onDoubleClick={activateEditModeHandler}>{value}</span>
+                <span onDoubleClick={activateEditModeHandler}>{props.value}</span>
             )}
         </>
     )
