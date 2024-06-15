@@ -76,7 +76,7 @@ export const UpdateTodolistTitle = () => {
 export const GetTasks = () => {
     const [state, setState] = useState<any>([])
     useEffect(() => {
-        todolistAPI.getTasks('e9b26a40-fdc9-408a-8b76-0aa5c4bb08d3').then((res) => {
+        todolistAPI.getTasks('9ed5e5fe-0294-471f-937b-77d744830308').then((res) => {
             setState(res.data);
         })
     }, [])
@@ -90,7 +90,7 @@ export const CreateTask = () => {
     const [state, setState] = useState<any>(null)
     const [title, setTitle] = useState<string>('')
     const createNewTask = () => {
-        todolistAPI.createTask('e9b26a40-fdc9-408a-8b76-0aa5c4bb08d3', title)
+        todolistAPI.createTask('9ed5e5fe-0294-471f-937b-77d744830308', title)
             .then((res) => {
                 setState(res.data);
             })
@@ -121,23 +121,16 @@ export const DeleteTask = () => {
     </div>
 }
 
+/*
 export const UpdateTask = () => {
     const [state, setState] = useState<any>(null)
     const [taskId, setTaskId] = useState<string>('')
-    const [title, setTitle] = useState<string>('')
-    const [description, setDescription] = useState<string>('')
-    const [status, setStatus] = useState<number>(0)
-    const [priority, setPriority] = useState<number>(0)
-    const [startDate, setStartDate] = useState<string>('')
-    const [deadline, setDeadline] = useState<string>('')
+    const [status, setStatus] = useState<boolean>(false)
     const updateTask = () => {
         todolistAPI.updateTask('e9b26a40-fdc9-408a-8b76-0aa5c4bb08d3', taskId, {
-            title,
-            description,
+
             status,
-            priority,
-            startDate,
-            deadline
+
         })
             .then((res) => {
                 setState(res.data)
@@ -146,13 +139,8 @@ export const UpdateTask = () => {
     return <div> {(state)}
         <div>
             <input placeholder={'write taskId'} onChange={e => setTaskId(e.currentTarget.value)}/>
-            <input placeholder={'write a new title'} onChange={e => setTitle(e.currentTarget.value)}/>
-            <input placeholder={'write a new description'} onChange={e => setDescription(e.currentTarget.value)}/>
-            <input placeholder={'write a new status'} onChange={e => setStatus(+e.currentTarget.value)}/>
-            <input placeholder={'write a new priority'} onChange={e => setPriority(+e.currentTarget.value)}/>
-            <input placeholder={'write a new startDate'} onChange={e => setStartDate(e.currentTarget.value)}/>
-            <input placeholder={'write a new deadline'} onChange={e => setDeadline(e.currentTarget.value)}/>
+            <input placeholder={'write a new status'} onChange={e => setStatus((e.currentTarget.checked))}/>
             <button onClick={updateTask}>update task</button>
         </div>
     </div>
-}
+}*/

@@ -11,15 +11,30 @@ import Paper from '@mui/material/Paper'
 import {MenuButton} from "./components/todolist/MenuButton";
 import CssBaseline from '@mui/material/CssBaseline'
 import Switch from '@mui/material/Switch'
-import {todolistThunks} from "./model/todolist-reducer";
-import {AddTaskAC, ChangeTaskStatusAC, ChangeTaskTitleAC, RemoveTaskAC} from "./model/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
-import {TodoListType} from "./AppWithReducers";
 import {AppDispatch, AppRootStateType} from "./store";
-import {RequestStatusType} from "./model/app-reducer";
+import {addTaskThunk, changeTaskStatusThunk, removeTaskThunk, tasksSlice} from "./model/tasks-slice";
+import {
+    addTodolistTC, changeTodolistFilterTC,
+    changeTodolistTitleTC,
+    fetchTodolistsThunk,
+    removeTodolistTC,
+} from "./model/todoList-slice";
 
 
 type ThemeMode = 'dark' | 'light'
+
+export type TaskType = {
+    id: string
+    title: string
+    isDone: boolean
+}
+
+export type TodoListType = {
+    id: string
+    title: string
+    filter: string
+}
 
 
 function AppWithRedux() {
@@ -43,66 +58,58 @@ function AppWithRedux() {
     const dispatch = useDispatch<AppDispatch>()
     const todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todoLists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const status = useSelector<AppRootStateType, string>(state => state.app.status)
-
 
 
     /*-----------TODOLISTS----------------*/
 
     const addTodolist = useCallback((title: string, id: string) => {
-        dispatch(todolistThunks.addTodolistThunk(title))
+        dispatch(addTodolistTC(title))
     }, [dispatch])
 
     const removeTodolist = useCallback((todolistId: string) => {
-        dispatch(todolistThunks.removeTodolistThunk(todolistId))
+        dispatch(removeTodolistTC(todolistId))
     }, [dispatch])
 
     const updateTodolist = useCallback((todolistId: string, title: string) => {
-        dispatch(todolistThunks.updateTodolistTitleThunk({todolistId, title}))
-    }, [])
+        dispatch(changeTodolistTitleTC({id: todolistId, title}))
+    }, [dispatch])
 
     const changeFilter = useCallback((filter: FilterValuesType, todolistId: string) => {
-        dispatch(todolistThunks.updateTodolistFilterThunk({todolistId, filter}))
+        dispatch(changeTodolistFilterTC({id: todolistId, filter}))
     }, [dispatch])
 
 
     /*-----------TASKS----------------*/
 
     const removeTask = useCallback((taskId: string, todolistId: string) => {
-        const action = RemoveTaskAC(taskId, todolistId)
+        const action = removeTaskThunk({taskId, todolistId})
         dispatch(action)
-    }, [])
+    }, [dispatch])
 
     const changeTaskStatus = useCallback((taskId: string, taskStatus: boolean, todolistId: string) => {
-        const action = ChangeTaskStatusAC(taskId, taskStatus, todolistId)
+        const action = changeTaskStatusThunk({taskId, taskStatus, todolistId})
         dispatch(action)
-    }, [])
+    }, [dispatch])
 
     const addTask = useCallback((title: string, todolistId: string) => {
-        const action = AddTaskAC(title, todolistId)
+        const action = addTaskThunk({todolistId, title})
         dispatch(action)
-    }, [])
+    }, [dispatch])
 
     const updateTask = useCallback((taskId: string, title: string, todolistId: string) => {
-        const action = ChangeTaskTitleAC(taskId, title, todolistId)
+        const action = tasksSlice.actions.changeTaskTitle({taskId, title, todolistId})
         dispatch(action)
-    }, [])
-
+    }, [dispatch])
 
     useEffect(() => {
-        dispatch(todolistThunks.fetchTodolistsThunk())
+        dispatch(fetchTodolistsThunk())
     }, [dispatch])
 
     /*-----------APP--------------------*/
 
-    const changeLoadingStatus = () => {
-        dispatch({type: 'APP/SET-STATUS'})
-    }
 
     return (
         <div>
-            <button onClick={changeLoadingStatus}>Toggle Loading</button>
-            {status === 'loading' && <LinearProgress/>}
             <ThemeProvider theme={theme}>
                 <CssBaseline/>
                 <AppBar position="static" sx={{mb: '30px'}}>

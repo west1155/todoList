@@ -4,11 +4,14 @@ import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Box from '@mui/material/Box'
 import {Task} from "./Task";
-import {TaskType} from "../../AppWithReducers";
+import {TaskType} from '../../AppWithRedux'
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan/EditableSpan";
-import React, {ChangeEvent, useCallback} from "react";
+import React, {ChangeEvent, useCallback, useEffect} from "react";
 import {filterButtonsContainerSx} from "./Todo.style";
+import {LinearProgress} from "@mui/material";
+import {fetchTasksThunk, setTasks} from "../../model/tasks-slice";
+import {useDispatch} from "react-redux";
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 
@@ -52,14 +55,11 @@ export const Todolist = React.memo(({
         addTaskHandler(title, todoListId)
     }
 
-
-
-
     const removeTodoListHandler = useCallback(() => {
         removeTodolist(todoListId)
     },[])
 
-    let allTodolistTasks = tasks
+    let allTodolistTasks = tasks || []
     let tasksForTodolist = allTodolistTasks
 
     if (filter === 'Active') {
@@ -70,9 +70,9 @@ export const Todolist = React.memo(({
         tasksForTodolist = tasks.filter(item => item.isDone)
     }
 
-
     return (
         <div className={s.todo}>
+            <LinearProgress />
             <div className={s.title}>
                 <h3><EditableSpan todoListId={todoListId} updateTodoList={updateTodolist} value={titleTodo}/></h3>
                 <IconButton onClick={removeTodoListHandler}>
@@ -86,8 +86,11 @@ export const Todolist = React.memo(({
                 <AddItemForm addItem={addItem}/>
             </div>
             <ul className={s.list}>
-                {tasksForTodolist.length === 0 ? <li className={s.li}>Empty</li> : (
+                {
+                    (tasksForTodolist && tasksForTodolist.length === 0) ? <li className={s.li}>Empty</li> : (
                     tasksForTodolist.map(task => {
+
+
                         const removeTaskHandler = () => {
                             removeTask(task.id, todoListId);
                         };
@@ -137,4 +140,5 @@ export const Todolist = React.memo(({
             </div>
         </div>
     )
+
 })

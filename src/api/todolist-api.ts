@@ -1,5 +1,5 @@
 import axios from "axios";
-import {TaskType} from "../AppWithReducers";
+import {TaskType} from "../AppWithRedux";
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -22,13 +22,14 @@ type FieldErrorType = {
 }
 
 
-type UpdateTaskModelType = {
+export type UpdateTaskModelType = {
     title: string
-    description: string
-    status: number
-    priority: number
-    startDate: string
-    deadline: string
+    description: string | ''
+    completed: boolean | false
+    status: number | 0
+    priority: number | 0
+    startDate: string | ''
+    deadline: string | ''
 }
 
 type ResponseType<D = {}> = {   //generic type for response, where D = {} means that by default is D
@@ -36,6 +37,14 @@ type ResponseType<D = {}> = {   //generic type for response, where D = {} means 
     messages: string[]
     fieldsErrors: FieldErrorType[]
     data: D
+}
+
+
+type GetTasksResponse = {
+    items: TaskType[]
+    totalCount: number
+    error: string | null
+
 }
 
 
@@ -57,8 +66,11 @@ export const todolistAPI = {
 
 
     //WORK WITH TASKS
+    getTask(todolistId: string, taskId: string) {
+        return instance.get<{item : TaskType}>(`todo-lists/${todolistId}/tasks/${taskId}`)
+    },
     getTasks(todolistId: string) {
-        return instance.get<ResponseType>(`todo-lists/${todolistId}/tasks`)
+        return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
         return instance.post<ResponseType<{item: TaskType}>>(`todo-lists/${todolistId}/tasks`, {title})
@@ -67,6 +79,6 @@ export const todolistAPI = {
         return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-        return instance.put<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
+        return instance.put<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`, model )
     },
 }

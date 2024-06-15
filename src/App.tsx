@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper'
 import {MenuButton} from "./components/todolist/MenuButton";
 import CssBaseline from '@mui/material/CssBaseline'
 import Switch from '@mui/material/Switch'
-import {TodoListType} from "./AppWithReducers";
+import {TodoListType} from "./AppWithRedux";
 
 
 type ThemeMode = 'dark' | 'light'
