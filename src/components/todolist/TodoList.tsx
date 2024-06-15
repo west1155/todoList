@@ -10,8 +10,6 @@ import {EditableSpan} from "./EditableSpan/EditableSpan";
 import React, {ChangeEvent, useCallback, useEffect} from "react";
 import {filterButtonsContainerSx} from "./Todo.style";
 import {LinearProgress} from "@mui/material";
-import {fetchTasksThunk, setTasks} from "../../model/tasks-slice";
-import {useDispatch} from "react-redux";
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 

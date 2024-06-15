@@ -15,7 +15,7 @@ export const fetchTasksThunk = createAsyncThunk(
             const response = await todolistAPI.getTasks(todolistId);
             const tasks = response.data.items.map((task: any) => ({
                 ...task,
-                isDone: response.status === 0
+                isDone: task.status !== 0
             }));
             return {todolistId, tasks};
         } catch (error: any) {
