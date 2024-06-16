@@ -1,4 +1,4 @@
-import {TodoListType} from '../AppWithRedux'
+import {TaskType, TodoListType} from '../AppWithRedux'
 import {v1} from "uuid";
 import {TasksStateType} from "../components/todolist/TodoList";
 
@@ -12,6 +12,8 @@ export const initialState: TodoListType[] = [
 ]
 
 
-export const initialStateTask: TasksStateType = {
+export type InitialStateTaskType = {
+    [key: string]: TaskType[];
+};
 
-}
+export const initialStateTask: InitialStateTaskType = {}

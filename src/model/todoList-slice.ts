@@ -80,13 +80,6 @@ export const todolistsSlice = createSlice({
     name: 'todolists',
     initialState: initialState as TodoListType[],
     reducers: {
-        /*addTodolist(state, action: PayloadAction<{ id: string, title: string }>) {
-            state.push({
-                id: action.payload.id,
-                title: action.payload.title,
-                filter: 'All',
-            });
-        },*/
 
         removeTodolist(state, action: PayloadAction<string>) {
             return state.filter(tl => tl.id !== action.payload);

@@ -3,7 +3,7 @@ import './App.css';
 import {FilterValuesType, Todolist} from "./components/todolist/TodoList";
 import {TasksStateType} from './components/todolist/TodoList'
 import {AddItemForm} from "./components/todolist/AddItemForm";
-import {AppBar, Container, createTheme, Grid, LinearProgress, ThemeProvider} from "@mui/material";
+import {AppBar, Container, createTheme, Grid, ThemeProvider} from "@mui/material";
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -13,7 +13,12 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Switch from '@mui/material/Switch'
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, AppRootStateType} from "./store";
-import {addTaskThunk, changeTaskStatusThunk, removeTaskThunk, tasksSlice} from "./model/tasks-slice";
+import {
+    addTaskThunk,
+    changeTaskStatusThunk,
+    changeTaskTitleThunk,
+    removeTaskThunk,
+} from "./model/tasks-slice";
 import {
     addTodolistTC, changeTodolistFilterTC,
     changeTodolistTitleTC,
@@ -27,6 +32,7 @@ type ThemeMode = 'dark' | 'light'
 export type TaskType = {
     id: string
     title: string
+    status: number
     isDone: boolean
 }
 
@@ -97,7 +103,7 @@ function AppWithRedux() {
     }, [dispatch])
 
     const updateTask = useCallback((taskId: string, title: string, todolistId: string) => {
-        const action = tasksSlice.actions.changeTaskTitle({taskId, title, todolistId})
+        const action = changeTaskTitleThunk({taskId, title, todolistId})
         dispatch(action)
     }, [dispatch])
 
