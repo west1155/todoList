@@ -3,7 +3,7 @@ import './App.css';
 import {FilterValuesType, Todolist} from "./components/todolist/TodoList";
 import {TasksStateType} from './components/todolist/TodoList'
 import {AddItemForm} from "./components/todolist/AddItemForm";
-import {AppBar, Container, createTheme, Grid, ThemeProvider} from "@mui/material";
+import {AppBar, CircularProgress, Container, createTheme, Grid, ThemeProvider} from "@mui/material";
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -12,6 +12,7 @@ import {MenuButton} from "./components/todolist/MenuButton";
 import CssBaseline from '@mui/material/CssBaseline'
 import Switch from '@mui/material/Switch'
 import {useDispatch, useSelector} from "react-redux";
+import {LinearProgress} from "@mui/material";
 import {AppDispatch, AppRootStateType} from "./store";
 import {
     addTaskThunk,
@@ -20,11 +21,12 @@ import {
     removeTaskThunk,
 } from "./model/tasks-slice";
 import {
-    addTodolistTC, changeTodolistFilterTC,
+    addTodolistTC,
     changeTodolistTitleTC,
     fetchTodolistsThunk,
-    removeTodolistTC,
+    removeTodolistTC, todolistsSlice,
 } from "./model/todoList-slice";
+import {ErrorSnackbar} from "./components/ErrorSnackbar/ErrorSnackbar";
 
 
 type ThemeMode = 'dark' | 'light'
@@ -62,9 +64,9 @@ function AppWithRedux() {
     }
 
     const dispatch = useDispatch<AppDispatch>()
-    const todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todoLists)
-    const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-
+    const todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todoLists.todolists)
+    const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks.tasks)
+    const status = useSelector<AppRootStateType, string>(state => state.tasks.status)
 
     /*-----------TODOLISTS----------------*/
 
@@ -81,7 +83,7 @@ function AppWithRedux() {
     }, [dispatch])
 
     const changeFilter = useCallback((filter: FilterValuesType, todolistId: string) => {
-        dispatch(changeTodolistFilterTC({id: todolistId, filter}))
+        dispatch(todolistsSlice.actions.changeTodolistFilterReducer({id: todolistId, filter}))
     }, [dispatch])
 
 
@@ -112,6 +114,11 @@ function AppWithRedux() {
     }, [dispatch])
 
     /*-----------APP--------------------*/
+    if (status === 'loading') {
+        return (<div style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>)
+    }
 
 
     return (
@@ -132,6 +139,7 @@ function AppWithRedux() {
 
                     </Toolbar>
                 </AppBar>
+                <ErrorSnackbar/>
                 <Container fixed>
                     <Grid container sx={{mb: '30px'}}>
                         <AddItemForm addItem={addTodolist}/>

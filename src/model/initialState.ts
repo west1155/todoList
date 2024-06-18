@@ -1,19 +1,31 @@
 import {TaskType, TodoListType} from '../AppWithRedux'
-import {v1} from "uuid";
 import {TasksStateType} from "../components/todolist/TodoList";
 
 
-/*let todoListId1 = v1()
-let todoListId2 = v1()*/
+export const initialTodoListsState: { status: RequestStatusType, todolists: TodoListType[], error: null | string } = {
+    todolists: [],
+    status: 'idle',
+    error: null,
+};
 
+export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
 
-export const initialState: TodoListType[] = [
-
-]
-
+export type TasksStatusType = {
+    tasks: TasksStateType;
+    status: RequestStatusType;
+    error: string | null;
+};
 
 export type InitialStateTaskType = {
     [key: string]: TaskType[];
 };
 
-export const initialStateTask: InitialStateTaskType = {}
+export const initialTaskState: TasksStatusType = {
+    tasks: {} as InitialStateTaskType,
+    status: 'idle',
+    error: null,
+};
+
+
+
+

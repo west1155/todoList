@@ -1,26 +1,25 @@
-import Snackbar, {SnackbarCloseReason} from "@mui/material/Snackbar";
-import { SyntheticEvent } from 'react';
+import React, { useState } from 'react'
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert, { AlertProps } from '@mui/material/Alert'
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
-type ErrorSnackbarPropsType = {
-    error: string | null
-    resetError: () => void
-}
+export function ErrorSnackbar() {
+    const [open, setOpen] = useState(true)
 
-export const ErrorSnackbar : React.FC<ErrorSnackbarPropsType> = ({ error, resetError }) => {
-
-    const handleClose = (event: SyntheticEvent | Event, reason: SnackbarCloseReason) => {
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
-            return;
+            return
         }
-        resetError();
-    };
+        setOpen(false)
+    }
     return (
-        <Snackbar
-            open={error !== null}
-            autoHideDuration={6000}
-            onClose={handleClose}
-            message={error}
-        />
-    );
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                Error message 😠
+            </Alert>
+        </Snackbar>
+    )
 }

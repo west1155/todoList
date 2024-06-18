@@ -32,7 +32,7 @@ export type UpdateTaskModelType = {
     deadline: string | ''
 }
 
-type ResponseType<D = {}> = {   //generic type for response, where D = {} means that by default is D
+export type ResponseType<D = {}> = {   //generic type for response, where D = {} means that by default is D
     resultCode: number
     messages: string[]
     fieldsErrors: FieldErrorType[]

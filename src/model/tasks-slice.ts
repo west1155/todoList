@@ -2,18 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { todolistAPI, UpdateTaskModelType } from "../api/todolist-api";
 import { TaskType } from "../AppWithRedux";
 import { AppRootStateType } from "../store";
-import {initialStateTask, InitialStateTaskType} from "./initialState";
+import {initialTaskState} from "./initialState";
 
-export type TasksStateType = {
-    [key: string]: TaskType[];
-};
-
-export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
-
-export type TasksStatusType = {
-    status: RequestStatusType;
-    error: string | null;
-};
 
 export const fetchTasksThunk = createAsyncThunk(
     'tasks/fetchTasks',
@@ -48,7 +38,7 @@ export const changeTaskStatusThunk = createAsyncThunk(
     async (param: { todolistId: string, taskId: string, taskStatus: boolean }, { getState, rejectWithValue }) => {
         try {
             const state = getState() as AppRootStateType;
-            const task = state.tasks[param.todolistId].find((task: TaskType) => task.id === param.taskId);
+            const task = state.tasks.tasks[param.todolistId].find((task: TaskType) => task.id === param.taskId);
 
             const updatedTask: UpdateTaskModelType = {
                 title: task?.title || '',
@@ -73,7 +63,7 @@ export const changeTaskTitleThunk = createAsyncThunk(
     async (param: { todolistId: string, taskId: string, title: string }, { getState, rejectWithValue }) => {
         try {
             const state = getState() as AppRootStateType;
-            const task = state.tasks[param.todolistId].find((task: TaskType) => task.id === param.taskId);
+            const task = state.tasks.tasks[param.todolistId].find((task: TaskType) => task.id === param.taskId);
 
             const updatedTask: UpdateTaskModelType = {
                 title: param.title,
@@ -106,18 +96,13 @@ export const removeTaskThunk = createAsyncThunk(
     }
 );
 
-const initialState: InitialStateTaskType & TasksStatusType = {
-    ...initialStateTask,
-    status: 'idle',
-    error: null,
-};
 
 export const tasksSlice = createSlice({
     name: 'tasks',
-    initialState,
+    initialState: initialTaskState,
     reducers: {
         setTasks(state, action: PayloadAction<{ todolistId: string, tasks: TaskType[] }>) {
-            state[action.payload.todolistId] = action.payload.tasks;
+            state.tasks[action.payload.todolistId] = action.payload.tasks;
         },
     },
     extraReducers: (builder) => {
@@ -127,7 +112,7 @@ export const tasksSlice = createSlice({
             })
             .addCase(fetchTasksThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state[action.payload.todolistId] = action.payload.tasks;
+                state.tasks[action.payload.todolistId] = action.payload.tasks;
             })
             .addCase(fetchTasksThunk.rejected, (state, action) => {
                 state.status = 'failed';
@@ -139,7 +124,7 @@ export const tasksSlice = createSlice({
             })
             .addCase(addTaskThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state[action.payload.todolistId].push(action.payload.task);
+                state.tasks[action.payload.todolistId].push(action.payload.task);
             })
             .addCase(addTaskThunk.rejected, (state, action) => {
                 state.status = 'failed';
@@ -151,7 +136,7 @@ export const tasksSlice = createSlice({
             })
             .addCase(removeTaskThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state[action.payload.todolistId] = state[action.payload.todolistId].filter(task => task.id !== action.payload.taskId);
+                state.tasks[action.payload.todolistId] = state.tasks[action.payload.todolistId].filter(task => task.id !== action.payload.taskId);
             })
             .addCase(removeTaskThunk.rejected, (state, action) => {
                 state.status = 'failed';
@@ -163,7 +148,7 @@ export const tasksSlice = createSlice({
             })
             .addCase(changeTaskStatusThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                const task = state[action.payload.todolistId].find(task => task.id === action.payload.taskId);
+                const task = state.tasks[action.payload.todolistId].find(task => task.id === action.payload.taskId);
                 if (task) {
                     task.isDone = action.payload.taskStatus;
                 }
@@ -178,7 +163,7 @@ export const tasksSlice = createSlice({
             })
             .addCase(changeTaskTitleThunk.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                const task = state[action.payload.todolistId].find(task => task.id === action.payload.taskId);
+                const task = state.tasks[action.payload.todolistId].find(task => task.id === action.payload.taskId);
                 if (task) {
                     task.title = action.payload.title;
                 }
