@@ -29,6 +29,7 @@ import {
 import {
   addTodolistTC,
   changeTodolistTitleTC,
+  fetchTodolistsThunk,
   removeTodolistTC,
   todolistsSlice,
 } from "./model/todoList-slice";
