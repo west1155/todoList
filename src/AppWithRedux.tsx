@@ -156,12 +156,12 @@ function AppWithRedux() {
     dispatch(loginThunk(loginToken));
   }, [dispatch]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!isLoggedIn) {
       return;
     }
     dispatch(fetchTodolistsThunk());
-  }, [isLoggedIn, dispatch]);
+  }, [isLoggedIn, dispatch]);*/
 
   /*-----------APP--------------------*/
   if (!isLoggedIn) {
