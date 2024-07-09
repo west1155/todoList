@@ -1,19 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 import AppWithRedux from "./AppWithRedux";
-import {Provider} from "react-redux";
-import {store} from "./store";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 root.render(
-    <Provider store={store}>
-        <AppWithRedux />
-    </Provider>
-
+  <Provider store={store}>
+    <AppWithRedux />
+  </Provider>,
 );
 
 // If you want to start measuring performance in your app, pass a function
