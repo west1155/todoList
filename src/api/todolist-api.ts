@@ -119,6 +119,3 @@ export const loginAndSetToken = async (email: string, password: string) => {
     console.error("Error during login:", error);
   }
 };
-
-// Automatically login with the given credentials
-loginAndSetToken("free@samuraijs.com", "free");

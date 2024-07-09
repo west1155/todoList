@@ -77,6 +77,10 @@ function AppWithRedux() {
     (state) => state.tasks.status,
   );
 
+  const isLoggedIn = useSelector<AppRootStateType, boolean>(
+    (state) => state.auth.isLoggedIn,
+  );
+
   /*-----------TODOLISTS----------------*/
 
   const addTodolist = useCallback(
@@ -150,11 +154,13 @@ function AppWithRedux() {
 
   useEffect(() => {
     dispatch(loginThunk(loginToken));
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    dispatch(fetchTodolistsThunk());
-  }, [dispatch]);
+    if (!isLoggedIn) {
+      dispatch(fetchTodolistsThunk());
+    }
+  }, [isLoggedIn, dispatch]);
 
   /*-----------APP--------------------*/
   if (status === "loading") {

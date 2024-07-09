@@ -12,11 +12,7 @@ export const loginThunk = createAsyncThunk(
     param: { email: string; password: string },
     { dispatch: Dispatch },
   ) => {
-    const dispatch = useDispatch<AppDispatch>();
     const response = await authAPI.login(param.email, param.password);
-    if (response.data.resultCode === 0) {
-      dispatch(fetchTodolistsThunk());
-    }
     return response.data;
   },
 );
@@ -34,7 +30,6 @@ export const authSlice = createSlice({
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.isLoggedIn = false;
-        //alert(action.error.message || "Some error occurred");
       });
   },
 });
