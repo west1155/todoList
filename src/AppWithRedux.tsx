@@ -153,14 +153,17 @@ function AppWithRedux() {
   const loginToken = { email: "free@samuraijs.com", password: "free" };
 
   useEffect(() => {
-    dispatch(loginThunk(loginToken));
-  }, [dispatch]);
+    (async () => {
+      await dispatch(loginThunk(loginToken));
+      await dispatch(fetchTodolistsThunk());
+    })();
+  }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!isLoggedIn) {
       dispatch(fetchTodolistsThunk());
     }
-  }, [isLoggedIn, dispatch]);
+  }, [dispatch]);*/
 
   /*-----------APP--------------------*/
   if (status === "loading") {

@@ -51,6 +51,7 @@ export const authAPI = {
       email,
       password,
     });
+    debugger;
   },
   logout() {
     return instance.delete<ResponseType>("auth/login");
@@ -104,18 +105,4 @@ export const todolistAPI = {
       model,
     );
   },
-};
-
-// Function to login and set the auth token
-export const loginAndSetToken = async (email: string, password: string) => {
-  try {
-    const response = await authAPI.login(email, password);
-    if (response.data.resultCode === 0) {
-      console.log("Login successful");
-    } else {
-      console.error("Login failed:", response.data.messages);
-    }
-  } catch (error) {
-    console.error("Error during login:", error);
-  }
 };
