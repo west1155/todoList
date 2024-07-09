@@ -5,8 +5,6 @@ import { AppRootStateType } from "../store";
 import { initialTaskState } from "./initialState";
 import axios, { AxiosError } from "axios";
 
-type FetchTasksThunkReturn = { todolistId: string; tasks: TaskType[] };
-
 interface APIError {
   message: string;
   status: number;

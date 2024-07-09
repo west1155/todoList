@@ -33,7 +33,7 @@ import {
   removeTodolistTC,
   todolistsSlice,
 } from "./model/todoList-slice";
-import { ErrorSnackbar } from "./components/ErrorSnackbar/ErrorSnackbar";
+import { loginThunk } from "../src/model/auth-slice";
 
 type ThemeMode = "dark" | "light";
 
@@ -145,6 +145,12 @@ function AppWithRedux() {
     },
     [dispatch],
   );
+
+  const loginToken = { email: "free@samuraijs.com", password: "free" };
+
+  useEffect(() => {
+    dispatch(loginThunk(loginToken));
+  }, []);
 
   useEffect(() => {
     dispatch(fetchTodolistsThunk());
