@@ -29,7 +29,6 @@ import {
 import {
   addTodolistTC,
   changeTodolistTitleTC,
-  fetchTodolistsThunk,
   removeTodolistTC,
   todolistsSlice,
 } from "./model/todoList-slice";
@@ -72,9 +71,6 @@ function AppWithRedux() {
   );
   const tasks = useSelector<AppRootStateType, TasksStateType>(
     (state) => state.tasks.tasks,
-  );
-  const status = useSelector<AppRootStateType, string>(
-    (state) => state.tasks.status,
   );
 
   const isLoggedIn = useSelector<AppRootStateType, boolean>(
@@ -156,12 +152,12 @@ function AppWithRedux() {
     dispatch(loginThunk(loginToken));
   }, [dispatch]);
 
-  /*useEffect(() => {
+  useEffect(() => {
     if (!isLoggedIn) {
       return;
     }
     dispatch(fetchTodolistsThunk());
-  }, [isLoggedIn, dispatch]);*/
+  }, [isLoggedIn, dispatch]);
 
   /*-----------APP--------------------*/
   if (!isLoggedIn) {
