@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { authAPI } from "../api/todolist-api";
-import { useDispatch } from "react-redux";
-import { fetchTodolistsThunk } from "../model/todoList-slice";
-import { AppDispatch } from "../store";
 
 // Slice
 
